@@ -28,7 +28,7 @@ class GalleryController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $images,
-            $request->query->getInt('different', 1)/*page number*/,
+            $request->query->getInt('page', 1)/*page number*/,
             4/*limit per page*/
         );
 

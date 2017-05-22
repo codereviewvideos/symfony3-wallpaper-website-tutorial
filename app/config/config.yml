@@ -71,7 +71,5 @@ swiftmailer:
 
 # KNP Paginator
 knp_paginator:
-    default_options:
-        page_name: different                # page query parameter name
     template:
         pagination: 'KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig'     # sliding pagination controls template
