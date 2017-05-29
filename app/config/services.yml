@@ -7,3 +7,11 @@ services:
     #service_name:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+
+    app.command.wallpaper_setup:
+        class: AppBundle\Command\SetupWallpapersCommand
+        arguments:
+            - "%kernel.root_dir%"
+            - "@doctrine.orm.default_entity_manager"
+        tags:
+            - { name: console.command }
