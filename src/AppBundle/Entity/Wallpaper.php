@@ -181,5 +181,18 @@ class Wallpaper
     {
         return $this->height;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->filename;
+    }
+
+    public function getImage()
+    {
+        return $this->filename;
+    }
 }
 

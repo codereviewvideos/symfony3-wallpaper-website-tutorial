@@ -1,4 +1,5 @@
 imports:
+    - { resource: config/easy_admin_bundle.yml }
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }

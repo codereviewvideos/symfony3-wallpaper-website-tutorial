@@ -307,7 +307,7 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
-            ->setFilename('landscape-winter-snowy-fisheye.jpg')
+            ->setFilename('landscape-winter-snowy-fisheye.png')
             ->setSlug('landscape-winter-snowy-fisheye')
             ->setWidth(1920)
             ->setHeight(1080)
