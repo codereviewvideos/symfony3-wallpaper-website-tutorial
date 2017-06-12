@@ -12,3 +12,9 @@ easy_admin:
                     - { property: "width", format: "%d" }
                     - { property: "height", format: "%d" }
                     - { property: "image", type: "image", base_path: "/images/" }
+            form:
+                fields:
+                    - { property: "file", type: "file", label: "File" }
+                    - "slug"
+                    - "width"
+                    - "height"

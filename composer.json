@@ -3,6 +3,9 @@
     "license": "proprietary",
     "type": "project",
     "autoload": {
+        "psr-0": {
+            "": "src/"
+        },
         "psr-4": {
             "": "src/"
         },
@@ -38,6 +41,7 @@
         "twig/twig": "^1.0||^2.0"
     },
     "require-dev": {
+        "phpspec/phpspec": "^3.4",
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0"
     },
