@@ -2,6 +2,7 @@
 
 namespace spec\AppBundle\Event\Listener;
 
+use AppBundle\Entity\Category;
 use AppBundle\Event\Listener\WallpaperUploadListener;
 use AppBundle\Service\FileMover;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -25,11 +26,24 @@ class WallpaperUploadListenerSpec extends ObjectBehavior
         $this->shouldHaveType(WallpaperUploadListener::class);
     }
 
+    function it_returns_early_if_prePersist_LifecycleEventArgs_entity_is_not_a_Wallpaper_instance(
+        LifecycleEventArgs $eventArgs
+    )
+    {
+        $eventArgs->getEntity()->willReturn(new Category());
+
+        $this->prePersist($eventArgs)->shouldReturn(false);
+
+        $this->fileMover->move(
+            Argument::any(),
+            Argument::any()
+        )->shouldNotHaveBeenCalled();
+    }
+
     function it_can_prePersist(LifecycleEventArgs $eventArgs)
     {
-
         $fakeTempPath = '/tmp/some.file';
-        $fakeRealPath =  '/path/to/my/project/some.file';
+        $fakeRealPath = '/path/to/my/project/some.file';
 
         $this->prePersist($eventArgs);
 
