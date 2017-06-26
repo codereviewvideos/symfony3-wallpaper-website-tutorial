@@ -31,8 +31,6 @@ class Wallpaper
 
     /**
      * @var UploadedFile
-     *
-     * @ORM\Column(name="file", type="string")
      */
     private $file;
 

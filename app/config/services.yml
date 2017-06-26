@@ -32,3 +32,5 @@ services:
         arguments:
             - "@app.service.local_filesystem_file_mover"
             - "@app.service.wallpaper_file_path_helper"
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }

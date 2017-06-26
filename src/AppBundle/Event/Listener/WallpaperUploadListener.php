@@ -52,7 +52,19 @@ class WallpaperUploadListener
         $this->fileMover->move($temporaryLocation, $newFileLocation);
 
 
-        //   - update the entity with additonal info
+        //   - update the entity with additional info
+        [
+            0 => $width,
+            1 => $height,
+        ] = getimagesize($newFileLocation);
+
+        $entity
+            ->setFilename(
+                $file->getClientOriginalName()
+            )
+            ->setHeight($height)
+            ->setWidth($width)
+        ;
 
         return true;
     }
