@@ -3,12 +3,14 @@
 namespace spec\AppBundle\Event\Listener;
 
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Wallpaper;
 use AppBundle\Event\Listener\WallpaperUploadListener;
 use AppBundle\Service\FileMover;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class WallpaperUploadListenerSpec extends ObjectBehavior
 {
@@ -40,10 +42,22 @@ class WallpaperUploadListenerSpec extends ObjectBehavior
         )->shouldNotHaveBeenCalled();
     }
 
-    function it_can_prePersist(LifecycleEventArgs $eventArgs)
+    function it_can_prePersist(
+        LifecycleEventArgs $eventArgs
+    )
     {
         $fakeTempPath = '/tmp/some.file';
         $fakeRealPath = '/path/to/my/project/some.file';
+
+        $uploadedFile = new UploadedFile(
+            $fakeTempPath,
+            'some.file'
+        );
+
+        $wallpaper = new Wallpaper();
+        $wallpaper->setFile($uploadedFile);
+
+        $eventArgs->getEntity()->willReturn($wallpaper);
 
         $this->prePersist($eventArgs);
 
