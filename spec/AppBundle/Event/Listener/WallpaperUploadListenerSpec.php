@@ -6,11 +6,11 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Wallpaper;
 use AppBundle\Event\Listener\WallpaperUploadListener;
 use AppBundle\Service\FileMover;
+use AppBundle\Model\FileInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class WallpaperUploadListenerSpec extends ObjectBehavior
 {
@@ -43,23 +43,22 @@ class WallpaperUploadListenerSpec extends ObjectBehavior
     }
 
     function it_can_prePersist(
-        LifecycleEventArgs $eventArgs
+        LifecycleEventArgs $eventArgs,
+        FileInterface $file
     )
     {
         $fakeTempPath = '/tmp/some.file';
         $fakeRealPath = '/path/to/my/project/some.file';
 
-        $uploadedFile = new UploadedFile(
-            $fakeTempPath,
-            'some.file'
-        );
+        $file->getExistingFilePath()->willReturn($fakeTempPath);
+        $file->getNewFilePath()->willReturn($fakeRealPath);
 
         $wallpaper = new Wallpaper();
-        $wallpaper->setFile($uploadedFile);
+        $wallpaper->setFile($file->getWrappedObject());
 
         $eventArgs->getEntity()->willReturn($wallpaper);
 
-        $this->prePersist($eventArgs);
+        $this->prePersist($eventArgs)->shouldReturn(true);
 
         $this->fileMover->move($fakeTempPath, $fakeRealPath)->shouldHaveBeenCalled();
     }

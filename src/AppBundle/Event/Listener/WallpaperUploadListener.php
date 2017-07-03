@@ -21,13 +21,24 @@ class WallpaperUploadListener
 
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
+        $entity = $eventArgs->getEntity();
+
         // if not Wallpaper entity, return false
-        if (false === $eventArgs->getEntity() instanceof Wallpaper) {
+        if (false === $entity instanceof Wallpaper) {
             return false;
         }
 
+        /**
+         * @var $entity Wallpaper
+         */
+
+        $file = $entity->getFile();
+
         // got here
-//        $this->fileMover->move();
+        $this->fileMover->move(
+            $file->getExistingFilePath(),
+            $file->getNewFilePath()
+        );
 
         return true;
     }
