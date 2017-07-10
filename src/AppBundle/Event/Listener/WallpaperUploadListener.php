@@ -4,6 +4,7 @@ namespace AppBundle\Event\Listener;
 
 use AppBundle\Entity\Wallpaper;
 use AppBundle\Service\FileMover;
+use AppBundle\Service\WallpaperFilePathHelper;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 
@@ -13,10 +14,15 @@ class WallpaperUploadListener
      * @var FileMover
      */
     private $fileMover;
+    /**
+     * @var WallpaperFilePathHelper
+     */
+    private $wallpaperFilePathHelper;
 
-    public function __construct(FileMover $fileMover)
+    public function __construct(FileMover $fileMover, WallpaperFilePathHelper $wallpaperFilePathHelper)
     {
         $this->fileMover = $fileMover;
+        $this->wallpaperFilePathHelper = $wallpaperFilePathHelper;
     }
 
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -34,10 +40,14 @@ class WallpaperUploadListener
 
         $file = $entity->getFile();
 
+        $newFileLocation = $this->wallpaperFilePathHelper->getNewFilePath(
+            $file->getFilename()
+        );
+
         // got here
         $this->fileMover->move(
-            $file->getExistingFilePath(),
-            $file->getNewFilePath()
+            $file->getPathname(),
+            $newFileLocation
         );
 
         return true;

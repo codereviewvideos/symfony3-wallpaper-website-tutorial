@@ -21,3 +21,9 @@ services:
         class: AppBundle\Service\FileMover
         arguments:
             - "@filesystem"
+
+
+    app.service.wallpaper_file_path_helper:
+        class: AppBundle\Service\WallpaperFilePathHelper
+        arguments:
+            - "%kernel.root_dir%/../web/images"

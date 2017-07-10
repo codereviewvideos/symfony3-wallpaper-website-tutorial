@@ -7,6 +7,7 @@ use AppBundle\Entity\Wallpaper;
 use AppBundle\Event\Listener\WallpaperUploadListener;
 use AppBundle\Service\FileMover;
 use AppBundle\Model\FileInterface;
+use AppBundle\Service\WallpaperFilePathHelper;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use PhpSpec\ObjectBehavior;
@@ -15,12 +16,14 @@ use Prophecy\Argument;
 class WallpaperUploadListenerSpec extends ObjectBehavior
 {
     private $fileMover;
+    private $wallpaperFilePathHelper;
 
-    function let(FileMover $fileMover)
+    function let(FileMover $fileMover, WallpaperFilePathHelper $wallpaperFilePathHelper)
     {
         $this->beConstructedWith($fileMover);
 
         $this->fileMover = $fileMover;
+        $this->wallpaperFilePathHelper = $wallpaperFilePathHelper;
     }
 
     function it_is_initializable()
@@ -48,19 +51,26 @@ class WallpaperUploadListenerSpec extends ObjectBehavior
     )
     {
         $fakeTempPath = '/tmp/some.file';
-        $fakeRealPath = '/path/to/my/project/some.file';
+        $fakeFilename = 'some.file';
 
-        $file->getExistingFilePath()->willReturn($fakeTempPath);
-        $file->getNewFilePath()->willReturn($fakeRealPath);
+        $file->getPathname()->willReturn($fakeTempPath);
+        $file->getFilename()->willReturn($fakeFilename);
 
         $wallpaper = new Wallpaper();
         $wallpaper->setFile($file->getWrappedObject());
 
         $eventArgs->getEntity()->willReturn($wallpaper);
 
+        $fakeNewFileLocation = '/some/new/fake/' . $fakeFilename;
+        $this
+            ->wallpaperFilePathHelper
+            ->getNewfilePath($fakeFilename)
+            ->willReturn($fakeNewFileLocation)
+        ;
+
         $this->prePersist($eventArgs)->shouldReturn(true);
 
-        $this->fileMover->move($fakeTempPath, $fakeRealPath)->shouldHaveBeenCalled();
+        $this->fileMover->move($fakeTempPath, $fakeNewFileLocation)->shouldHaveBeenCalled();
     }
 
     function it_can_preUpdate(PreUpdateEventArgs $eventArgs)
