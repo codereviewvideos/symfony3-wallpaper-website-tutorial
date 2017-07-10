@@ -27,3 +27,16 @@ services:
         class: AppBundle\Service\WallpaperFilePathHelper
         arguments:
             - "%kernel.root_dir%/../web/images"
+
+    app.service.image_file_dimensions_helper:
+        class: AppBundle\Service\ImageFileDimensionsHelper
+
+
+    app.event.listener.wallpaper_upload_listener:
+        class: AppBundle\Event\Listener\WallpaperUploadListener
+        arguments:
+            - "@app.service.file_mover"
+            - "@app.service.wallpaper_file_path_helper"
+            - "@app.service.image_file_dimensions_helper"
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }

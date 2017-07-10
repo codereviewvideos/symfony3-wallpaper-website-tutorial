@@ -7,6 +7,7 @@ use AppBundle\Entity\Wallpaper;
 use AppBundle\Event\Listener\WallpaperUploadListener;
 use AppBundle\Service\FileMover;
 use AppBundle\Model\FileInterface;
+use AppBundle\Service\ImageFileDimensionsHelper;
 use AppBundle\Service\WallpaperFilePathHelper;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -17,13 +18,19 @@ class WallpaperUploadListenerSpec extends ObjectBehavior
 {
     private $fileMover;
     private $wallpaperFilePathHelper;
+    private $imageFileDimensionsHelper;
 
-    function let(FileMover $fileMover, WallpaperFilePathHelper $wallpaperFilePathHelper)
+    function let(
+        FileMover $fileMover,
+        WallpaperFilePathHelper $wallpaperFilePathHelper,
+        ImageFileDimensionsHelper $imageFileDimensionsHelper
+    )
     {
-        $this->beConstructedWith($fileMover);
+        $this->beConstructedWith($fileMover, $wallpaperFilePathHelper, $imageFileDimensionsHelper);
 
         $this->fileMover = $fileMover;
         $this->wallpaperFilePathHelper = $wallpaperFilePathHelper;
+        $this->imageFileDimensionsHelper = $imageFileDimensionsHelper;
     }
 
     function it_is_initializable()
@@ -64,13 +71,22 @@ class WallpaperUploadListenerSpec extends ObjectBehavior
         $fakeNewFileLocation = '/some/new/fake/' . $fakeFilename;
         $this
             ->wallpaperFilePathHelper
-            ->getNewfilePath($fakeFilename)
+            ->getNewFilePath($fakeFilename)
             ->willReturn($fakeNewFileLocation)
         ;
 
-        $this->prePersist($eventArgs)->shouldReturn(true);
+        $this->imageFileDimensionsHelper->setImageFilePath($fakeNewFileLocation)->shouldBeCalled();
+        $this->imageFileDimensionsHelper->getWidth()->willReturn(1024);
+        $this->imageFileDimensionsHelper->getHeight()->willReturn(768);
+
+        $outcome = $this->prePersist($eventArgs);
 
         $this->fileMover->move($fakeTempPath, $fakeNewFileLocation)->shouldHaveBeenCalled();
+
+        $outcome->shouldBeAnInstanceOf(Wallpaper::class);
+        $outcome->getFilename()->shouldReturn($fakeFilename);
+        $outcome->getWidth()->shouldReturn(1024);
+        $outcome->getHeight()->shouldReturn(768);
     }
 
     function it_can_preUpdate(PreUpdateEventArgs $eventArgs)

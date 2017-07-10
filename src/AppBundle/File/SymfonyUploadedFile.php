@@ -33,11 +33,11 @@ class SymfonyUploadedFile implements FileInterface
 
     public function getPathname()
     {
-        return $this->uploadedFile->getPathname();
+        return $this->file->getPathname();
     }
 
     public function getFilename()
     {
-        return $this->uploadedFile->getClientOriginalName();
+        return $this->file->getClientOriginalName();
     }
 }
