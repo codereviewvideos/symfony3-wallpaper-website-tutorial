@@ -6,12 +6,46 @@ use AppBundle\Entity\Wallpaper;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterface
+class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+
     public function load(ObjectManager $manager)
     {
+        /**
+         * @var $fs Filesystem
+         */
+        $fs = $this->container->get('filesystem');
+
+        $imagesPath = __DIR__ . '/../images';
+        $temporaryImagesPath = sys_get_temp_dir() . '/images';
+        echo 'Copying images to temporary location.' . PHP_EOL;
+        $fs->mirror($imagesPath, $temporaryImagesPath);
+
+//        exec('cp -R ' . $imagesPath . ' ' . $temporaryImagesPath);
+
+
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-background-pink.jpg',
+                    'abstract-background-pink.jpg'
+                )
+            )
             ->setFilename('abstract-background-pink.jpg')
             ->setSlug('abstract-background-pink')
             ->setWidth(1920)
@@ -26,6 +60,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-black-and-white-wave.jpg',
+                    'abstract-black-and-white-wave.jpg'
+                )
+            )
             ->setFilename('abstract-black-and-white-wave.jpg')
             ->setSlug('abstract-black-and-white-wave')
             ->setWidth(1920)
@@ -40,6 +80,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-black-multi-color-wave.jpg',
+                    'abstract-black-multi-color-wave.jpg'
+                )
+            )
             ->setFilename('abstract-black-multi-color-wave.jpg')
             ->setSlug('abstract-black-multi-color-wave')
             ->setWidth(1920)
@@ -54,6 +100,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-blue-green.jpg',
+                    'abstract-blue-green.jpg'
+                )
+            )
             ->setFilename('abstract-blue-green.jpg')
             ->setSlug('abstract-blue-green')
             ->setWidth(1920)
@@ -69,6 +121,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-blue-line-background.jpg',
+                    'abstract-blue-line-background.jpg'
+                )
+            )
             ->setFilename('abstract-blue-line-background.jpg')
             ->setSlug('abstract-blue-line-background')
             ->setWidth(1920)
@@ -83,6 +141,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-red-background-pattern.jpg',
+                    'abstract-red-background-pattern.jpg'
+                )
+            )
             ->setFilename('abstract-red-background-pattern.jpg')
             ->setSlug('abstract-red-background-pattern')
             ->setWidth(1920)
@@ -97,6 +161,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-shards.jpeg',
+                    'abstract-shards.jpeg'
+                )
+            )
             ->setFilename('abstract-shards.jpeg')
             ->setSlug('abstract-shards')
             ->setWidth(1920)
@@ -111,6 +181,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/abstract-swirls.jpeg',
+                    'abstract-swirls.jpeg'
+                )
+            )
             ->setFilename('abstract-swirls.jpeg')
             ->setSlug('abstract-swirls')
             ->setWidth(1920)
@@ -125,6 +201,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-summer-beach.jpg',
+                    'landscape-summer-beach.jpg'
+                )
+            )
             ->setFilename('landscape-summer-beach.jpg')
             ->setSlug('landscape-summer-beach')
             ->setWidth(1920)
@@ -139,6 +221,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-summer-field.jpg',
+                    'landscape-summer-field.jpg'
+                )
+            )
             ->setFilename('landscape-summer-field.jpg')
             ->setSlug('landscape-summer-field')
             ->setWidth(1920)
@@ -153,6 +241,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-summer-flowers.jpg',
+                    'landscape-summer-flowers.jpg'
+                )
+            )
             ->setFilename('landscape-summer-flowers.jpg')
             ->setSlug('landscape-summer-flowers')
             ->setWidth(1920)
@@ -167,6 +261,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-summer-hill.jpg',
+                    'landscape-summer-hill.jpg'
+                )
+            )
             ->setFilename('landscape-summer-hill.jpg')
             ->setSlug('landscape-summer-hill')
             ->setWidth(1920)
@@ -181,6 +281,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-summer-mountain.png',
+                    'landscape-summer-mountain.png'
+                )
+            )
             ->setFilename('landscape-summer-mountain.png')
             ->setSlug('landscape-summer-mountain')
             ->setWidth(1920)
@@ -195,6 +301,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-summer-sea.jpg',
+                    'landscape-summer-sea.jpg'
+                )
+            )
             ->setFilename('landscape-summer-sea.jpg')
             ->setSlug('landscape-summer-sea')
             ->setWidth(1920)
@@ -209,6 +321,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-summer-sky.jpg',
+                    'landscape-summer-sky.jpg'
+                )
+            )
             ->setFilename('landscape-summer-sky.jpg')
             ->setSlug('landscape-summer-sky')
             ->setWidth(1920)
@@ -223,6 +341,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-winter-canada-lake.jpg',
+                    'landscape-winter-canada-lake.jpg'
+                )
+            )
             ->setFilename('landscape-winter-canada-lake.jpg')
             ->setSlug('landscape-winter-canada-lake')
             ->setWidth(1920)
@@ -237,6 +361,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-winter-high-tatras.jpg',
+                    'landscape-winter-high-tatras.jpg'
+                )
+            )
             ->setFilename('landscape-winter-high-tatras.jpg')
             ->setSlug('landscape-winter-high-tatras')
             ->setWidth(1920)
@@ -251,6 +381,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-winter-snow-lake.jpg',
+                    'landscape-winter-snow-lake.jpg'
+                )
+            )
             ->setFilename('landscape-winter-snow-lake.jpg')
             ->setSlug('landscape-winter-snow-lake')
             ->setWidth(1920)
@@ -265,6 +401,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-winter-snow-mountain.jpeg',
+                    'landscape-winter-snow-mountain.jpeg'
+                )
+            )
             ->setFilename('landscape-winter-snow-mountain.jpeg')
             ->setSlug('landscape-winter-snow-mountain')
             ->setWidth(1920)
@@ -279,6 +421,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-winter-snow-trees.jpg',
+                    'landscape-winter-snow-trees.jpg'
+                )
+            )
             ->setFilename('landscape-winter-snow-trees.jpg')
             ->setSlug('landscape-winter-snow-trees')
             ->setWidth(1920)
@@ -293,6 +441,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-winter-snowboard-jump.jpg',
+                    'landscape-winter-snowboard-jump.jpg'
+                )
+            )
             ->setFilename('landscape-winter-snowboard-jump.jpg')
             ->setSlug('landscape-winter-snowboard-jump')
             ->setWidth(1920)
@@ -307,6 +461,12 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $wallpaper = (new Wallpaper())
+            ->setFile(
+                new UploadedFile(
+                    $temporaryImagesPath . '/landscape-winter-snowy-fisheye.png',
+                    'landscape-winter-snowy-fisheye.png'
+                )
+            )
             ->setFilename('landscape-winter-snowy-fisheye.png')
             ->setSlug('landscape-winter-snowy-fisheye')
             ->setWidth(1920)
@@ -322,6 +482,11 @@ class LoadWallpaperData extends AbstractFixture implements OrderedFixtureInterfa
 
 
         $manager->flush();
+
+
+        echo 'Removed images from temporary location.' . PHP_EOL;
+        $fs->remove($temporaryImagesPath);
+//        exec('rm -rf ' . $temporaryImagesPath);
     }
 
     public function getOrder()

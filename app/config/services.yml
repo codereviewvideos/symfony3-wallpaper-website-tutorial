@@ -27,8 +27,8 @@ services:
         arguments:
             - "%kernel.root_dir%/../web/images/"
 
-    app.doctrine_event_listener.wallpaper_upload_listener:
-        class: AppBundle\Event\Listener\WallpaperUploadListener
+    app.doctrine_event_listener.wallpaper_listener:
+        class: AppBundle\Event\Listener\WallpaperListener
         arguments:
             - "@app.service.local_filesystem_file_mover"
             - "@app.service.wallpaper_file_path_helper"
