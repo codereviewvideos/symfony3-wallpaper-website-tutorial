@@ -39,6 +39,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'Form/fields.html.twig'
 
 # Doctrine Configuration
 doctrine:

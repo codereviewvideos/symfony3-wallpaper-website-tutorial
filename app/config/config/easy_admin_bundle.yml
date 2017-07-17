@@ -14,5 +14,5 @@ easy_admin:
                     - { property: "image", type: "image", base_path: "/images/" }
             form:
                 fields:
-                    - { property: "file", type: "file", label: "File" }
+                    - { property: "file", type: AppBundle\Form\Type\CustomFileType, label: "File" }
                     - "slug"

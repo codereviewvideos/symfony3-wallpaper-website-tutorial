@@ -34,3 +34,11 @@ services:
             - "@app.service.wallpaper_file_path_helper"
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+
+
+    app.form.type.custom_file_type:
+        class: AppBundle\Form\Type\CustomFileType
+        arguments:
+            - "@logger"
+        tags:
+            - { name: form.type, alias: custom_file_type }
