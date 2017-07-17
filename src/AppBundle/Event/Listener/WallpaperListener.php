@@ -29,6 +29,18 @@ class WallpaperListener
     {
         $entity = $eventArgs->getEntity();
 
+        $this->upload($entity);
+    }
+
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $this->upload(
+            $eventArgs->getEntity()
+        );
+    }
+
+    private function upload($entity)
+    {
         // if not Wallpaper entity, return false
         if (false === $entity instanceof Wallpaper) {
             return false;
@@ -67,9 +79,5 @@ class WallpaperListener
         ;
 
         return true;
-    }
-
-    public function preUpdate(PreUpdateEventArgs $eventArgs)
-    {
     }
 }

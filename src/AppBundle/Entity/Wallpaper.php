@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *
  * @ORM\Table(name="wallpaper")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WallpaperRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Wallpaper
 {
@@ -107,6 +108,10 @@ class Wallpaper
     public function setFile(UploadedFile $file)
     {
         $this->file = $file;
+
+        if ($file) {
+            $this->setUpdatedAt();
+        }
 
         return $this;
     }
@@ -219,5 +224,63 @@ class Wallpaper
     {
         return $this->filename;
     }
+
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
+     */
+    private $updatedAt;
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return Wallpaper
+     */
+    public function setCreatedAt()
+    {
+        $this->createdAt = new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     *
+     * @return Wallpaper
+     */
+    public function setUpdatedAt()
+    {
+        $this->updatedAt = new \DateTime('now');
+
+        return $this;
+    }
+
+
 }
 

@@ -34,6 +34,7 @@ services:
             - "@app.service.wallpaper_file_path_helper"
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
 
 
     app.form.type.custom_file_type:
