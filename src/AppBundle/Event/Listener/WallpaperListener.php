@@ -3,6 +3,7 @@
 namespace AppBundle\Event\Listener;
 
 use AppBundle\Entity\Wallpaper;
+use AppBundle\Service\FileDeleter;
 use AppBundle\Service\FileMover;
 use AppBundle\Service\WallpaperFilePathHelper;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -18,11 +19,20 @@ class WallpaperListener
      * @var WallpaperFilePathHelper
      */
     private $wallpaperFilePathHelper;
+    /**
+     * @var FileDeleter
+     */
+    private $fileDeleter;
 
-    public function __construct(FileMover $fileMover, WallpaperFilePathHelper $wallpaperFilePathHelper)
+    public function __construct(
+        FileMover $fileMover,
+        WallpaperFilePathHelper $wallpaperFilePathHelper,
+        FileDeleter $fileDeleter
+    )
     {
         $this->fileMover = $fileMover;
         $this->wallpaperFilePathHelper = $wallpaperFilePathHelper;
+        $this->fileDeleter = $fileDeleter;
     }
 
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -36,6 +46,24 @@ class WallpaperListener
     {
         $this->upload(
             $eventArgs->getEntity()
+        );
+    }
+
+    public function preRemove(LifecycleEventArgs $eventArgs)
+    {
+        /**
+         * @var $entity Wallpaper
+         */
+        $entity = $eventArgs->getEntity();
+
+        if (false === $entity instanceof Wallpaper) {
+            return false;
+        }
+
+        $entity->setFile(null);
+
+        $this->fileDeleter->delete(
+            $entity->getFilename()
         );
     }
 

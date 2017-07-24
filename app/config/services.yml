@@ -25,16 +25,24 @@ services:
     app.service.wallpaper_file_path_helper:
         class: AppBundle\Service\WallpaperFilePathHelper
         arguments:
-            - "%kernel.root_dir%/../web/images/"
+            - "%wallpaper_file_path%"
+
+    app.service.local_filesystem_file_deleter:
+        class: AppBundle\Service\LocalFilesystemFileDeleter
+        arguments:
+            - "@filesystem"
+            - "%wallpaper_file_path%"
 
     app.doctrine_event_listener.wallpaper_listener:
         class: AppBundle\Event\Listener\WallpaperListener
         arguments:
             - "@app.service.local_filesystem_file_mover"
             - "@app.service.wallpaper_file_path_helper"
+            - "@app.service.local_filesystem_file_deleter"
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preRemove }
 
 
     app.form.type.custom_file_type:

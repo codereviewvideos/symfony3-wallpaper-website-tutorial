@@ -102,10 +102,10 @@ class Wallpaper
     }
 
     /**
-     * @param UploadedFile $file
+     * @param UploadedFile|null $file
      * @return Wallpaper
      */
-    public function setFile(UploadedFile $file)
+    public function setFile(UploadedFile $file = null)
     {
         $this->file = $file;
 
