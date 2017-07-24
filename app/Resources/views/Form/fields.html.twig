@@ -1,5 +1,10 @@
 {% block custom_file_widget %}
     <div class="custom-file">
         {{ form_widget(form.file) }}
+
+        <!-- image preview -->
+        {% if file_uri is defined and file_uri is not null %}
+            <img src="{{ file_uri }}" class="img img-responsive img-preview thumbnail" />
+        {% endif %}
     </div>
 {% endblock %}
