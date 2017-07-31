@@ -23,8 +23,6 @@ class UploadedFileType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        parent::buildView($view, $form, $options);
-
         $view->vars['full_name'] = $view->vars['full_name'] . '[file]';
     }
 
