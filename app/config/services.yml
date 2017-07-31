@@ -32,11 +32,12 @@ services:
         class: AppBundle\Service\ImageFileDimensionsHelper
 
 
-    app.event.listener.wallpaper_upload_listener:
-        class: AppBundle\Event\Listener\WallpaperUploadListener
+    app.event.listener.wallpaper_listener:
+        class: AppBundle\Event\Listener\WallpaperListener
         arguments:
             - "@app.service.file_mover"
             - "@app.service.wallpaper_file_path_helper"
             - "@app.service.image_file_dimensions_helper"
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }

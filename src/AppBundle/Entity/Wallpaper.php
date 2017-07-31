@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Traits\Timestampable;
 use AppBundle\Model\FileInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,9 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="wallpaper")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WallpaperRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Wallpaper
 {
+    use Timestampable;
+
     /**
      * @var int
      *
@@ -107,6 +111,10 @@ class Wallpaper
     public function setFile(FileInterface $file)
     {
         $this->file = $file;
+
+        if ($file) {
+            $this->setUpdatedAt();
+        }
 
         return $this;
     }
