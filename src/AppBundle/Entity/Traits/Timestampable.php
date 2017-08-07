@@ -35,6 +35,7 @@ trait Timestampable
     /**
      * Set created at
      *
+     * @ORM\PrePersist()
      * @return $this
      */
     public function setCreatedAt()
@@ -57,6 +58,7 @@ trait Timestampable
     /**
      * Set updated at
      *
+     * @ORM\PreUpdate()
      * @return $this
      */
     public function setUpdatedAt()
