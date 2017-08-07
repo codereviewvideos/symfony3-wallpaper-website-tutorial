@@ -139,4 +139,19 @@ class WallpaperListenerSpec extends ObjectBehavior
         $outcome->getWidth()->shouldReturn(1024);
         $outcome->getHeight()->shouldReturn(768);
     }
+
+    function it_can_preRemove(
+        LifecycleEventArgs $eventArgs,
+        Wallpaper $wallpaper
+    )
+    {
+        $wallpaper->getFilename()->willReturn('fake-filename.jpg');
+        $eventArgs->getEntity()->willReturn($wallpaper);
+
+        $this->preRemove($eventArgs);
+
+        $this->fileDeleter->delete('fake-filename.jpg')->shouldHaveBeenCalled();
+
+        $wallpaper->setFile(null)->shouldHaveBeenCalled();
+    }
 }
