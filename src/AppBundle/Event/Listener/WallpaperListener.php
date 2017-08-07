@@ -3,6 +3,7 @@
 namespace AppBundle\Event\Listener;
 
 use AppBundle\Entity\Wallpaper;
+use AppBundle\Service\FileDeleter;
 use AppBundle\Service\FileMover;
 use AppBundle\Service\ImageFileDimensionsHelper;
 use AppBundle\Service\WallpaperFilePathHelper;
@@ -23,16 +24,22 @@ class WallpaperListener
      * @var ImageFileDimensionsHelper
      */
     private $imageFileDimensionsHelper;
+    /**
+     * @var FileDeleter
+     */
+    private $fileDeleter;
 
     public function __construct(
         FileMover $fileMover,
         WallpaperFilePathHelper $wallpaperFilePathHelper,
-        ImageFileDimensionsHelper $imageFileDimensionsHelper
+        ImageFileDimensionsHelper $imageFileDimensionsHelper,
+        FileDeleter $fileDeleter
     )
     {
         $this->fileMover = $fileMover;
         $this->wallpaperFilePathHelper = $wallpaperFilePathHelper;
         $this->imageFileDimensionsHelper = $imageFileDimensionsHelper;
+        $this->fileDeleter = $fileDeleter;
     }
 
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -60,13 +67,18 @@ class WallpaperListener
          * @var $entity Wallpaper
          */
 
+        if ($entity->getFilename() !== null) {
+            $this->fileDeleter->delete(
+                $entity->getFilename()
+            );
+        }
+
         $file = $entity->getFile();
 
         $newFileLocation = $this->wallpaperFilePathHelper->getNewFilePath(
             $file->getFilename()
         );
 
-        // got here
         $this->fileMover->move(
             $file->getPathname(),
             $newFileLocation
@@ -89,8 +101,21 @@ class WallpaperListener
         return $entity;
     }
 
-    public function preRemove($argument1)
+    public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        // TODO: write logic here
+        /**
+         * @var $entity Wallpaper
+         */
+        $entity = $eventArgs->getEntity();
+
+        if (false === $entity instanceof Wallpaper) {
+            return false;
+        }
+
+        $entity->setFile(null);
+
+        $this->fileDeleter->delete(
+            $entity->getFilename()
+        );
     }
 }

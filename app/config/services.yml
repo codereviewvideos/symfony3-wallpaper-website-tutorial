@@ -45,6 +45,7 @@ services:
             - "@app.service.file_mover"
             - "@app.service.wallpaper_file_path_helper"
             - "@app.service.image_file_dimensions_helper"
+            - "@app.service.local_filesystem_file_deleter"
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }

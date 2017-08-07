@@ -5,6 +5,7 @@ namespace spec\AppBundle\Event\Listener;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Wallpaper;
 use AppBundle\Event\Listener\WallpaperListener;
+use AppBundle\Service\FileDeleter;
 use AppBundle\Service\FileMover;
 use AppBundle\Model\FileInterface;
 use AppBundle\Service\ImageFileDimensionsHelper;
@@ -19,18 +20,26 @@ class WallpaperListenerSpec extends ObjectBehavior
     private $fileMover;
     private $wallpaperFilePathHelper;
     private $imageFileDimensionsHelper;
+    private $fileDeleter;
 
     function let(
         FileMover $fileMover,
         WallpaperFilePathHelper $wallpaperFilePathHelper,
-        ImageFileDimensionsHelper $imageFileDimensionsHelper
+        ImageFileDimensionsHelper $imageFileDimensionsHelper,
+        FileDeleter $fileDeleter
     )
     {
-        $this->beConstructedWith($fileMover, $wallpaperFilePathHelper, $imageFileDimensionsHelper);
+        $this->beConstructedWith(
+            $fileMover,
+            $wallpaperFilePathHelper,
+            $imageFileDimensionsHelper,
+            $fileDeleter
+        );
 
         $this->fileMover = $fileMover;
         $this->wallpaperFilePathHelper = $wallpaperFilePathHelper;
         $this->imageFileDimensionsHelper = $imageFileDimensionsHelper;
+        $this->fileDeleter = $fileDeleter;
     }
 
     function it_is_initializable()
@@ -81,6 +90,12 @@ class WallpaperListenerSpec extends ObjectBehavior
 
         $outcome = $this->prePersist($eventArgs);
 
+        $this
+            ->fileDeleter
+            ->delete(Argument::any())
+            ->shouldNotHaveBeenCalled()
+        ;
+
         $this->fileMover->move($fakeTempPath, $fakeNewFileLocation)->shouldHaveBeenCalled();
 
         $outcome->shouldBeAnInstanceOf(Wallpaper::class);
@@ -116,6 +131,7 @@ class WallpaperListenerSpec extends ObjectBehavior
 
         $wallpaper = new Wallpaper();
         $wallpaper->setFile($file->getWrappedObject());
+        $wallpaper->setFilename($fakeFilename);
 
         $eventArgs->getEntity()->willReturn($wallpaper);
 
@@ -132,6 +148,12 @@ class WallpaperListenerSpec extends ObjectBehavior
 
         $outcome = $this->preUpdate($eventArgs);
 
+        $this
+            ->fileDeleter
+            ->delete($fakeFilename)
+            ->shouldHaveBeenCalled()
+        ;
+
         $this->fileMover->move($fakeTempPath, $fakeNewFileLocation)->shouldHaveBeenCalled();
 
         $outcome->shouldBeAnInstanceOf(Wallpaper::class);
@@ -145,13 +167,32 @@ class WallpaperListenerSpec extends ObjectBehavior
         Wallpaper $wallpaper
     )
     {
+        $wallpaper->setFile(null)->shouldBeCalled();
         $wallpaper->getFilename()->willReturn('fake-filename.jpg');
         $eventArgs->getEntity()->willReturn($wallpaper);
 
         $this->preRemove($eventArgs);
 
-        $this->fileDeleter->delete('fake-filename.jpg')->shouldHaveBeenCalled();
+        $this
+            ->fileDeleter
+            ->delete('fake-filename.jpg')
+            ->shouldHaveBeenCalled()
+        ;
+    }
 
-        $wallpaper->setFile(null)->shouldHaveBeenCalled();
+    function it_will_not_continue_with_preRemove_if_not_a_Wallpaper_instance(
+        LifecycleEventArgs $eventArgs,
+        Category $category
+    )
+    {
+        $eventArgs->getEntity()->willReturn($category);
+
+        $this->preRemove($eventArgs);
+
+        $this
+            ->fileDeleter
+            ->delete(Argument::any())
+            ->shouldNotHaveBeenCalled()
+        ;
     }
 }

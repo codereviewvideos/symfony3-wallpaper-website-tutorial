@@ -105,10 +105,10 @@ class Wallpaper
     }
 
     /**
-     * @param FileInterface $file
+     * @param FileInterface|null $file
      * @return Wallpaper
      */
-    public function setFile(FileInterface $file)
+    public function setFile(FileInterface $file = null)
     {
         $this->file = $file;
 
