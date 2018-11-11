@@ -47,8 +47,9 @@ class WallpaperUploadListener
         /**
          * @var $entity Wallpaper
          */
-
-        $file = $entity->getFile();
+        if (null === $file = $entity->getFile()) {
+            return $entity;
+        }
 
         $newFileLocation = $this->wallpaperFilePathHelper->getNewFilePath(
             $file->getFilename()
